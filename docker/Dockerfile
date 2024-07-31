@@ -8,7 +8,7 @@ ARG USERNAME=user
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ENV SHELL /bin/bash
+ENV SHELL=/bin/bash
 ENV TERM=xterm-256color
 
 # Create the user
@@ -53,6 +53,14 @@ RUN TZ=Asia/Taipei && \
     echo $TZ > /etc/timezone && \
     dpkg-reconfigure -f noninteractive tzdata 
 
+### install YDLiDAR SDK
+COPY .YDLidar-SDK /home/YDLidar-SDK
+WORKDIR /home/YDLidar-SDK
+RUN mkdir -p build && rm -rf build/*
+WORKDIR /home/YDLidar-SDK/build
+RUN cmake .. && \
+    make && \
+    sudo make install
 
 ### install realsense SDK
 # WORKDIR /opt/librealsense
@@ -77,15 +85,15 @@ RUN TZ=Asia/Taipei && \
 #     rm -rf .git
 
 ### install and build dependencies
-RUN sudo apt-get update && \
-    rosdep update && \
-    rosdep install --from-paths . --ignore-src -r -y && \
-    cd .. && \
-    /bin/bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; catkin_make' && \
-    echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc \
-    && apt-get autoremove -y \
-    && apt-get autoclean -y \
-    && sudo rm -rf /var/lib/apt/lists/* 
+# RUN sudo apt-get update && \
+#     rosdep update && \
+#     rosdep install --from-paths . --ignore-src -r -y && \
+#     cd .. && \
+#     /bin/bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; catkin_make' && \
+#     echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc \
+#     && apt-get autoremove -y \
+#     && apt-get autoclean -y \
+#     && sudo rm -rf /var/lib/apt/lists/* 
 
 # ### fix tf2_server_test_nodelets.xml missing error
 # COPY /scripts/fix-tf2.sh /fix-tf2.sh
@@ -94,14 +102,14 @@ RUN sudo apt-get update && \
 USER $USERNAME
 RUN mkdir -p /home/$USERNAME/main_ws/src
 
-COPY .bashrc /home/$USERNAME/.bashrc.conf
-COPY install.sh /home/$USERNAME/install.sh
-RUN cat /home/$USERNAME/.bashrc.conf >> /home/$USERNAME/.bashrc
+# COPY .bashrc /home/$USERNAME/.bashrc.conf
+# COPY install.sh /home/$USERNAME/install.sh
+# RUN cat /home/$USERNAME/.bashrc.conf >> /home/$USERNAME/.bashrc
 
 # RUN git clone https://github.com/DIT-ROBOTICS/eurobot_msgs.git ~/home/$USERNAME/main_ws/src/
 SHELL ["/bin/bash", "-c"]
-RUN cd /home/$USERNAME/main_ws && source /opt/ros/noetic/setup.bash && catkin_make
-RUN git clone https://github.com/Assume-Zhan/rosserial.git /home/$USERNAME/main_ws/src/rosserial
-RUN cd /home/$USERNAME/main_ws && source devel/setup.bash && catkin_make
+# RUN cd /home/$USERNAME/main_ws && source /opt/ros/noetic/setup.bash && catkin_make
+# RUN git clone https://github.com/Assume-Zhan/rosserial.git /home/$USERNAME/main_ws/src/rosserial
+# RUN cd /home/$USERNAME/main_ws && source devel/setup.bash && catkin_make
 
 CMD ["/bin/bash"]
