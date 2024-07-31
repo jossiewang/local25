@@ -98,9 +98,8 @@ RUN cmake .. && \
 # ### fix tf2_server_test_nodelets.xml missing error
 # COPY /scripts/fix-tf2.sh /fix-tf2.sh
 # RUN /bin/bash /fix-tf2.sh 
-
 USER $USERNAME
-RUN mkdir -p /home/$USERNAME/main_ws/src
+WORKDIR /home/$USERNAME/summer2024_ws/src
 
 # COPY .bashrc /home/$USERNAME/.bashrc.conf
 # COPY install.sh /home/$USERNAME/install.sh
