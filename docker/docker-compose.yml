@@ -14,7 +14,7 @@ services:
     restart: no
 
     network_mode: host
-    working_dir: /home/$USERNAME/summer2024_ws/src
+    working_dir: /home/user/summer2024_ws
     environment:
       - DISPLAY=${DISPLAY}
       # Set ros2 environment variables.
@@ -23,7 +23,7 @@ services:
       # - https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Configuring-ROS2-Environment.html
       # - ROS_LOCALHOST_ONLY=1
       # - ROS_DOMAIN_ID=42
-      # - ROS2_WS=/home/${USERNAME}/main_ws/src
+      - ROS_WS=/home/user/summer2024_ws
     volumes:
       # Mount local timezone into container. ( Readonly )
       # Reference: https://stackoverflow.com/questions/57607381/how-do-i-change-timezone-in-a-docker-container
@@ -32,9 +32,10 @@ services:
       # Mount X11 server
       - /tmp/.X11-unix:/tmp/.X11-unix
       # Direct Rendering Infrastructure
-      - /dev/dri:/dev/dri
+      # - /dev/dri:/dev/dri
       # Mount sound card to prevent Gazebo warning.
-      - /dev/snd:/dev/snd
+      # - /dev/snd:/dev/snd
+      - /dev:/dev
       # Mount Gazebo models directory to reuse models downloaded during first launch.
       # Reference: https://answers.ros.org/question/365658
       # - ./cache/.gazebo:/home/user/.gazebo
@@ -44,6 +45,6 @@ services:
       # "source=${localWorkspaceFolder}/../cache/humble/install,target=/home/ws/install,type=bind",
       # "source=${localWorkspaceFolder}/../cache/humble/log,target=/home/ws/log,type=bind"
       # Mount workspace
-      - ../summer2024_ws:/home/$USERNAME/summer2024_ws
+      - ../summer2024_ws/src/local25-extract-ws:/home/user/summer2024_ws/src/local25-extract-ws
 
     command: /bin/bash
