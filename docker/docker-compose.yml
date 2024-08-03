@@ -45,8 +45,6 @@ services:
       # "source=${localWorkspaceFolder}/../cache/humble/install,target=/home/ws/install,type=bind",
       # "source=${localWorkspaceFolder}/../cache/humble/log,target=/home/ws/log,type=bind"
       # Mount workspace
-      # - ~/local25/summer2024_ws:/home/$USERNAME/summer2024_ws
-      # - ~/local25/summer2024_ws/devel:/home/user/summer2024_ws/devel
-      # - ~/local25/summer2024_ws/build:/home/user/summer2024_ws/build
+      - ../summer2024_ws/src/local25-extract-ws:/home/user/summer2024_ws/src/local25-extract-ws
 
     command: /bin/bash
