@@ -62,6 +62,14 @@ RUN cmake .. && \
     make && \
     sudo make install
 
+USER $USERNAME
+ARG WORKSPACE_DIR=/home/$USERNAME/summer2024_ws
+WORKDIR ${WORKSPACE_DIR}/src
+
+WORKDIR ${WORKSPACE_DIR}/src/ydlidar_ros_driver
+COPY ydlidar_ros_driver ${WORKSPACE_DIR}/src/ydlidar_ros_driver
+
+WORKDIR /home/$USERNAME/summer2024_ws/src
 ### install realsense SDK
 # WORKDIR /opt/librealsense
 # RUN git clone https://github.com/IntelRealSense/librealsense.git /opt/librealsense \
@@ -98,8 +106,7 @@ RUN cmake .. && \
 # ### fix tf2_server_test_nodelets.xml missing error
 # COPY /scripts/fix-tf2.sh /fix-tf2.sh
 # RUN /bin/bash /fix-tf2.sh 
-USER $USERNAME
-WORKDIR /home/$USERNAME/summer2024_ws/src
+
 
 # COPY .bashrc /home/$USERNAME/.bashrc.conf
 # COPY install.sh /home/$USERNAME/install.sh
@@ -107,7 +114,7 @@ WORKDIR /home/$USERNAME/summer2024_ws/src
 
 # RUN git clone https://github.com/DIT-ROBOTICS/eurobot_msgs.git ~/home/$USERNAME/main_ws/src/
 SHELL ["/bin/bash", "-c"]
-# RUN cd /home/$USERNAME/main_ws && source /opt/ros/noetic/setup.bash && catkin_make
+RUN cd ${WORKSPACE_DIR} && source /opt/ros/noetic/setup.bash && catkin_make
 # RUN git clone https://github.com/Assume-Zhan/rosserial.git /home/$USERNAME/main_ws/src/rosserial
 # RUN cd /home/$USERNAME/main_ws && source devel/setup.bash && catkin_make
 
