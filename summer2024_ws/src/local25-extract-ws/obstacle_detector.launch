@@ -1,0 +1,28 @@
+<launch>
+
+    <param name="use_sim_time" value="true"/>  
+    <node name="scans_demo" pkg="rosbag" type="play" output="screen" args="--clock --loop /home/user/summer2024_ws/src/local25-extract-ws/lidar_scan.bag"/>
+
+    <arg name="robot_name" default="robot" />
+    <arg name="robot_name_slash" default="robot/" />
+
+    <group ns="$(arg robot_name)">
+
+        <rosparam file="/home/user/summer2024_ws/src/local25-extract-ws/obstacle_detector.yaml" command="load" />
+
+        <!-- link to laser -->
+        <node name="base_link_to_laser" pkg="tf2_ros" type="static_transform_publisher"
+            args="0 0 0 0 0 1 0 $(arg robot_name_slash)base_footprint $(arg robot_name_slash)laser_frame" />
+
+        <!-- scan processing -->
+        <node name="obstacle_detector_to_base" pkg="obstacle_detector"
+            type="obstacle_extractor_node">
+            <param name="frame_id" value="$(arg robot_name_slash)base_footprint" />
+            <remap from="raw_obstacles" to="obstacles_to_base" />
+        </node>
+
+    </group>
+
+    <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d /home/user/summer2024_ws/src/local25-extract-ws/version1.rviz"/>
+
+</launch>
