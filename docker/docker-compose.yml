@@ -3,10 +3,9 @@ services:
   ros1-localization:
     build: 
       context: .
-      dockerfile: Dockerfile
       args:
         USERNAME: user
-    image: lidar-image
+    image: jossiewang/dit-localization:test
     container_name: lidar-test
     stdin_open: true
     tty: true
